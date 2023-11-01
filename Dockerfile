@@ -1,4 +1,5 @@
 FROM arm64v8/ros:noetic-robot
+# FROM amd64/ros:noetic-robot
 
 ENV USE_HOST_NETWORK=true
 

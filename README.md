@@ -1,5 +1,6 @@
+# Steps to connect over ROS
 
-## Steps to connect over ROS
+## Via Docker
 
 Below are steps to setting up a naoqi_driver ros node on your computer and connecting it to the Pepper robot.
 ### 1. Setting up your computer
@@ -98,3 +99,84 @@ You should now be able to publish and read messages from the Pepper robot throug
 
 https://github.com/ros-naoqi/naoqi_driver
 https://wiki.ros.org/noetic# ROStoNAO-Bridge-Docker-Setup
+
+## Direct Installation
+
+### 1. Set up Ubuntu VM
+
+Must use Ubuntu 20.04. Can find the iso [here](https://releases.ubuntu.com/focal/).
+
+If the `sudo` command causes an error, you may have to add yourself as a sudo user.
+```
+su - 
+# Then put in your vm user password
+sudo adduser [your vm username] sudo
+```
+Then restart your VM and you should now be able to use the sudo command. More information can be found [here](https://www.reddit.com/r/linux4noobs/comments/y7cr34/user_is_not_in_the_sudoers_file_error_after/).
+
+### 2. Install ROS Noetic 
+The following instructions are based on ROS Noetic documentation found [here](http://wiki.ros.org/noetic/Installation/Ubuntu). 
+
+Setup your computer to accept software from packages.ros.org.
+```
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+```
+
+Setup your keys. 
+```
+sudo apt install curl
+curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+```
+
+Make sure your Debian package index is up-to-date.
+```
+sudo apt update
+```
+
+Install ROS.
+```
+sudo apt install ros-noetic-desktop-full
+```
+### 3. Set Up the Naoqi Driver 
+
+Install dependencies.
+```
+sudo apt-get update
+sudo apt-get install -y git-all
+sudo apt-get install ros-noetic-naoqi-libqi
+sudo apt-get install ros-noetic-naoqi-libqicore
+sudo apt-get install ros-noetic-naoqi-bridge-msgs
+sudo apt install net-tools
+```
+
+Create directory.
+```
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src
+```
+
+Clone Naoqi driver into directory.
+```
+git clone https://github.com/ros-naoqi/naoqi_driver.git ~/catkin_ws/src/naoqi_driver
+```
+
+Source your ROS script (must do this in every terminal you open and want to use ROS in).
+```
+source /opt/ros/noetic/setup.bash
+```
+
+Install Naoqi driver.
+```
+rosdep install -i -y --from-paths ~/catkin_ws/src/naoqi_driver
+. /opt/ros/noetic/setup.sh
+```
+You may have to install and update rosdep before this step, if you get errors.
+```
+sudo apt install python3-rosdep2
+rosdep update
+```
+### 4. Connecting Pepper with ROS
+
+Connect Pepper and your computer to the same network (NETGEAR23-5G). 
+
+Follow "Via Docker" steps 4-8 above (excluding the docker commands in step 7) to connect and run ROS on Pepper.
